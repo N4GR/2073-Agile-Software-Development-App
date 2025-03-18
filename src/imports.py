@@ -2,11 +2,16 @@
 
 # Third-party imports.
 from PySide6.QtWidgets import (
-    QWidget, QPushButton, QApplication, QLabel
+    QWidget, QPushButton, QApplication, QLabel, QVBoxLayout, QTextEdit,
+    QHBoxLayout, QSizePolicy
 )
 
 from PySide6.QtGui import (
-    QResizeEvent
+    QResizeEvent, QIcon, QPixmap
+)
+
+from PySide6.QtCore import (
+    Qt
 )
 
 # Local imports.

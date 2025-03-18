@@ -21,7 +21,17 @@ class MainWindow(QWidget):
         self.login_window = LoginWindow(self)
     
     def resizeEvent(self, event: QResizeEvent):
-        self.background.setFixedSize(self.size())
+        def resize_to_window(widget: QWidget):
+            try:
+                widget.setFixedSize(self.size())
+            
+            except AttributeError: # Widget reference hasn't been created yet.
+                pass
+            
+            except RuntimeError: # Widget has been deleted during runtime.
+                pass
+        
+        resize_to_window(self.background)
         
         return super().resizeEvent(event)
     
