@@ -10,9 +10,6 @@ from src.windows.chat_window import ChatWindow
 from src.windows.billing_window import BillingWindow
 from src.windows.current_classes_window import CurrentClassesWindow
 
-# Widget imports.
-from src.windows.widgets.header_widget import HeaderWidget
-
 class MainWindow(QWidget):
     def __init__(self):
         """A QWidget subclass containing the main window of the QApplication."""
@@ -42,9 +39,11 @@ class MainWindow(QWidget):
     def _set_widgets(self):
         """A function to load widgets into the widget."""
         self.login_window = LoginWindow(self)
-        self.header = HeaderWidget(self)
         
         self.current_window = self.login_window # Set the current window to the login window.
+        
+        # Change the window title to reflect new window.
+        self.setWindowTitle(f"{self.application_name} - Login")
     
     def login_member(
             self,
@@ -71,12 +70,25 @@ class MainWindow(QWidget):
         # Delete the current window being displayed.
         self.current_window.deleteLater()
         
-        # Delete the header.
-        self.header.deleteLater()
-        
         # Create the gym window.
         self.gym_window = GymWindow(self)
         self.current_window = self.gym_window # Set the current window to the gym window.
+    
+    def logout_member(self) -> None:
+        """A function to log out a user from the application, returning back to login menu."""
+        print("Showing login window.")
+        
+        # Delete the current window being displayed.
+        self.current_window.deleteLater()
+        
+        # Create the login window.
+        self.login_window = LoginWindow(self)
+        
+        # Change the window title to reflect new window.
+        self.setWindowTitle(f"{self.application_name} - Login")
+        
+        # Set the current window.
+        self.current_window = self.login_window
     
     def show_profile_window(self):
         """A function to show the profile window."""

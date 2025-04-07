@@ -1,5 +1,8 @@
 from src.shared.imports import *
 
+# Widget imports.
+from src.windows.widgets.header_widget import HeaderWidget
+
 class LoginWindow(QWidget):
     def __init__(
             self,
@@ -16,6 +19,9 @@ class LoginWindow(QWidget):
     
         self._set_design()
         self._set_widgets()
+        
+        # Show the window.
+        self.show()
     
     def _set_design(self):
         """A function to set the design of a widget."""
@@ -29,6 +35,7 @@ class LoginWindow(QWidget):
     def _set_widgets(self):
         """A function to set the relevant widgets to the login window."""
         self.login_panel = LoginPanel(self)
+        self.header = HeaderWidget(self)
 
 class LoginPanel(QWidget):
     def __init__(

@@ -2,7 +2,7 @@
 import sqlite3
 
 # Object imports.
-from src.shared.objects import Member
+from src.shared.objects import *
 
 class DatabaseManager:
     def __init__(
@@ -43,8 +43,6 @@ class DatabaseManager:
         
         self.cursor.execute(query)
         fetch = self.cursor.fetchone()
-        
-        print(fetch)
         
         if fetch is None:
             return None
@@ -98,3 +96,76 @@ class DatabaseManager:
 
         print(f"Member successfully added: {member.email}")
         return fetched_member
+    
+    def get_member_chats(
+            self,
+            member: Member
+    ) -> list:
+        member_id = member.id
+        self.cursor.execute(
+            f"SELECT * FROM chats WHERE members "
+            f"LIKE '%[{member_id},%'"
+            f"OR members LIKE '% {member_id},%'"
+            f"OR members LIKE '% {member_id}]%'"
+        ) # Search for all instances of the users ID.
+        
+        fetch = self.cursor.fetchall()
+        
+        return fetch
+    
+    def add_message(
+            self,
+            chat: Chat,
+            message: Message
+    ):
+        chat.messages.append(message) # Add the message to the chat.
+        
+        message_dicts : list[dict] = [] # Moving the messages to a dictionary to add to database.
+        for message in chat.messages:
+            message_dicts.append(
+                {
+                    "user_id": message.member.id,
+                    "text": message.text
+                }
+            )
+        
+        # Convert message dicts to json form.
+        json_string = json.dumps(message_dicts)
+        
+        # Add the new json data to the chat in the database.
+        self.cursor.execute(f"UPDATE chats SET messages = ? WHERE id = ?", (json_string, chat.id))
+        self.connection.commit()
+        
+    def create_chat(
+            self,
+            sender: Member,
+            receiver: Member
+    ) -> None:
+        """A function to create a chat between two users."""
+        sender_id = sender.id
+        receiver_id = receiver.id
+        
+        members = [sender_id, receiver_id]
+        messages = []
+        
+        self.cursor.execute("INSERT INTO chats (members, messages) VALUES (?, ?)", (str(members), str(messages)))
+        self.connection.commit()
+    
+    def get_personal_chat(
+            self,
+            member_1: Member,
+            member_2: Member
+    ) -> None:
+        """A function to get any chat that has just two members."""
+        member_1_id = member_1.id
+        member_2_id = member_2.id
+        
+        self.cursor.execute(
+            f"SELECT * FROM chats WHERE members "
+            f"LIKE '[{member_1_id}, {member_2_id}]'"
+            f"OR members LIKE '[{member_2_id}, {member_1_id}]'"
+        ) # Search for all instances of the users ID.
+        
+        fetch = self.cursor.fetchone()
+        
+        return fetch

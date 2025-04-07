@@ -5,11 +5,11 @@ import random
 # Third-party imports.
 from PySide6.QtWidgets import (
     QWidget, QApplication, QLabel, QLineEdit, QHBoxLayout, QVBoxLayout, QSizePolicy,
-    QPushButton
+    QPushButton, QScrollArea, QTextEdit
 )
 
 from PySide6.QtCore import (
-    QPoint, Qt
+    QPoint, Qt, QSize, QTimer
 )
 
 from PySide6.QtGui import (

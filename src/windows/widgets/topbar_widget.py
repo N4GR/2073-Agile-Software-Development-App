@@ -56,6 +56,7 @@ class TopBarWidget(QWidget):
             self.profile_button = self.ProfileButton(self)
             self.classes_button = self.ClassesButton(self)
             self.chat_button = self.ChatButton(self)
+            self.logout_button = self.LogoutButton(self)
         
         def _set_layout(self):
             """A function to set the layout of the container."""
@@ -66,6 +67,7 @@ class TopBarWidget(QWidget):
             self.main_layout.addWidget(self.profile_button)
             self.main_layout.addWidget(self.classes_button)
             self.main_layout.addWidget(self.chat_button)
+            self.main_layout.addWidget(self.logout_button)
             
             self.setLayout(self.main_layout)
             self.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
@@ -176,3 +178,25 @@ class TopBarWidget(QWidget):
                 """A function called once the button is clicked."""
                 main_window : QWidget = QApplication.instance().property("MainWindow") # Get the main window object form the QApplication.
                 main_window.show_chat_window()
+        
+        class LogoutButton(Button):
+            def __init__(
+                    self,
+                    parent: QWidget
+            ) -> None:
+                """A logout button subclass of button, which is a QPushButton - used for displaying the login window.
+
+                Args:
+                    parent (QWidget): Parent widget of the QPushButton, typically the top bar.
+                """
+                super().__init__(parent, "/assets/icons/logout.png")
+                self._set_connections()
+            
+            def _set_connections(self):
+                """A function to add the button connections."""
+                self.clicked.connect(self._on_click)
+            
+            def _on_click(self):
+                """A function called once the button is clicked."""
+                main_window : QWidget = QApplication.instance().property("MainWindow") # Get the main window object form the QApplication.
+                main_window.logout_member()
