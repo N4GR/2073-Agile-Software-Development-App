@@ -33,6 +33,9 @@ class MainWindow(QWidget):
         
         # Set the window title.
         self.setWindowTitle(self.application_name)
+        
+        # Set the window icon.
+        self.setWindowIcon(QPixmap(path("/assets/logo.png")))
     
         self.move_to_screen("Acer P226HQ")
     
