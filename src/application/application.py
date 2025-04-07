@@ -25,13 +25,3 @@ class Application(QApplication):
         self.setProperty("FontManager", self.font_manager)
         self.setProperty("DatabaseManager", self.database_manager)
         self.setProperty("ColourManager", self.colour_manager)
-    
-    def setProperty(self, name, value):
-        print(f"QAPPLICATION | PROPERTY ADD | {name}, {value}")
-        
-        return super().setProperty(name, value)
-
-    def property(self, name):
-        print(f"QAPPLICATION | PROPERTY GET | {name}")
-        
-        return super().property(name)
