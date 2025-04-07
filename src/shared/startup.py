@@ -8,9 +8,13 @@ def startup() -> bool:
     required_databases = ["chat.sqlite", "gym.sqlite"]
     database_list = os.listdir(path("/data"))
     
+    print(f"Searching for required files: {required_databases}")
+    
     for file in database_list:
         if file in required_databases:
             required_databases.remove(file)
+            
+            print(f"Found required file: {file}")
     
     # If there's any still left in the required, create the database.
     for database in required_databases:
@@ -30,9 +34,11 @@ def startup() -> bool:
         try:
             cursor.execute(sql_query)
             connection.commit()
+
+            print(f"Successfully created: {database}")
         
         except sqlite3.Error as error:
-            print(f"Error creating database: {error}")
+            print(f"Error creating database - {database}: {error}")
             
             return True # Error occoured, exit starting program.
         
