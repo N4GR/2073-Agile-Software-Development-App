@@ -6,6 +6,9 @@ from src.windows.login_window import LoginWindow
 from src.windows.gym_window import GymWindow
 from src.windows.profile_window import ProfileWindow
 from src.windows.classes_window import ClassesWindow
+from src.windows.chat_window import ChatWindow
+from src.windows.billing_window import BillingWindow
+from src.windows.current_classes_window import CurrentClassesWindow
 
 # Widget imports.
 from src.windows.widgets.header_widget import HeaderWidget
@@ -17,6 +20,8 @@ class MainWindow(QWidget):
         # Add a property to QApplication, making this widget the main window.
         QApplication.instance().setProperty("MainWindow", self)
         
+        self.application_name = "Gymify"
+        
         self.current_window : QWidget = None # Storage for the current window showing.
         
         self._set_design()
@@ -27,7 +32,7 @@ class MainWindow(QWidget):
         self.setFixedSize(360, 640) # Low resolution mobile to fit in window.
         
         # Set the window title.
-        self.setWindowTitle("Gymify")
+        self.setWindowTitle(self.application_name)
     
         self.move_to_screen("Acer P226HQ")
     
@@ -80,6 +85,9 @@ class MainWindow(QWidget):
         # Create the profile window.
         self.profile_window = ProfileWindow(self)
         
+        # Change the window title to reflect new window.
+        self.setWindowTitle(f"{self.application_name} - Profile")
+        
         # Set the current window.
         self.current_window = self.profile_window
     
@@ -90,11 +98,62 @@ class MainWindow(QWidget):
         # Delete the current window being displayed.
         self.current_window.deleteLater()
         
-        # Create the profile window.
+        # Create the classes window.
         self.classes_window = ClassesWindow(self)
+        
+        # Change the window title to reflect new window.
+        self.setWindowTitle(f"{self.application_name} - Classes")
         
         # Set the current window.
         self.current_window = self.classes_window
+
+    def show_chat_window(self):
+        """A function to show the chat window."""
+        print("Showing the chat window.")
+        
+        # Delete the current window being displayed.
+        self.current_window.deleteLater()
+        
+        # Create the chat window.
+        self.chat_window = ChatWindow(self)
+        
+        # Change the window title to reflect new window.
+        self.setWindowTitle(f"{self.application_name} - Chat")
+        
+        # Set the current window.
+        self.current_window = self.chat_window
+    
+    def show_billing_window(self):
+        """A function to show the billing window."""
+        print("Showing the billing window.")
+        
+        # Delete the current window being displayed.
+        self.current_window.deleteLater()
+        
+        # Create the billing window.
+        self.billing_window = BillingWindow(self)
+        
+        # Change the window title to reflect new window.
+        self.setWindowTitle(f"{self.application_name} - Billing")
+        
+        # Set the current window.
+        self.current_window = self.billing_window
+    
+    def show_current_classes_window(self):
+        """A function to show the current classes window."""
+        print("Showing the current classes window.")
+        
+        # Delete the current window being displayed.
+        self.current_window.deleteLater()
+        
+        # Create the current classes window.
+        self.current_classes_window = CurrentClassesWindow(self)
+        
+        # Change the window title to reflect new window.
+        self.setWindowTitle(f"{self.application_name} - Current Classes")
+        
+        # Set the current window.
+        self.current_window = self.current_classes_window
 
     def move_to_screen(
             self,

@@ -43,39 +43,19 @@ class TopBarWidget(QWidget):
                 parent (QWidget): Parent of the container, typically the top bar widget.
             """
             super().__init__(parent)
-            self.buttons : list[QPushButton] = [] # Storage container for buttons.
-            
             self._set_design()
             self._set_widgets()
-            self._update_design()
             self._set_layout()
             
         def _set_design(self):
             """A function to set the design of the container."""
-            self.setFixedHeight(self.parentWidget().height())
+            self.setFixedSize(self.parentWidget().size())
         
         def _set_widgets(self):
             """A function to load all the relevant widgets to the buttons container."""
             self.profile_button = self.ProfileButton(self)
             self.classes_button = self.ClassesButton(self)
-            
-            # Add the buttons to the storage container.
-            self.buttons.append(self.profile_button)
-            self.buttons.append(self.classes_button)
-        
-        def _update_design(self):
-            """A function to update the design of the widget once the buttons have been added."""
-            # Adjust width to how many buttons are in the button storage.
-            new_width = self.buttons[0].width() * len(self.buttons)
-            
-            self.setFixedWidth(new_width)
-            
-            # Move to right side of the top bar.
-            self.move(
-                self.parentWidget().width()
-                - self.width(),
-                0
-            )
+            self.chat_button = self.ChatButton(self)
         
         def _set_layout(self):
             """A function to set the layout of the container."""
@@ -85,6 +65,7 @@ class TopBarWidget(QWidget):
             # Add the widgets to the layout.
             self.main_layout.addWidget(self.profile_button)
             self.main_layout.addWidget(self.classes_button)
+            self.main_layout.addWidget(self.chat_button)
             
             self.setLayout(self.main_layout)
             self.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
@@ -173,3 +154,25 @@ class TopBarWidget(QWidget):
                 """A function called once the button is clicked."""
                 main_window : QWidget = QApplication.instance().property("MainWindow") # Get the main window object form the QApplication.
                 main_window.show_classes_window()
+        
+        class ChatButton(Button):
+            def __init__(
+                    self,
+                    parent: QWidget
+            ) -> None:
+                """A chat button subclass of button, which is a QPushButton - used for displaying the chat window.
+
+                Args:
+                    parent (QWidget): Parent widget of the QPushButton, typically the top bar.
+                """
+                super().__init__(parent, "/assets/icons/chat.png")
+                self._set_connections()
+            
+            def _set_connections(self):
+                """A function to add the button connections."""
+                self.clicked.connect(self._on_click)
+            
+            def _on_click(self):
+                """A function called once the button is clicked."""
+                main_window : QWidget = QApplication.instance().property("MainWindow") # Get the main window object form the QApplication.
+                main_window.show_chat_window()
