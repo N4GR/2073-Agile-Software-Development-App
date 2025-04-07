@@ -1,6 +1,8 @@
 class ColourManager:
     def __init__(self):
         """A function of colour manager, containing data like background colour, font colour ect."""
-        self.background = "#121017"
-        self.panel = "#16141c"
-        self.border = "#25283a"
+        self.background = "#DFDDC6"
+        self.panel = "#C0EA6A"
+        self.border = "#42554F"
+        self.header = "#F8F6E7"
+        self.text = "#42554F"

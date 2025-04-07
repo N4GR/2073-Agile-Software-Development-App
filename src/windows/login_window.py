@@ -192,12 +192,21 @@ class LoginPanel(QWidget):
             super().__init__(parent)
             self.input_type = input_type
             
+            self.colour_manager : ColourManager = QApplication.instance().property("ColourManager")
+            self.font_manager : FontManager = QApplication.instance().property("FontManager")
+            
             # Label for the name of the input type.
             self.name_label = QLabel(self)
+            self.name_label.setFont(self.font_manager.geist.bold)
+            self.name_label_font = self.name_label.font()
+            self.name_label_font.setPointSize(15)
+            self.name_label.setFont(self.name_label_font)
             self.name_label.setText(self.input_type.upper())
+            self.name_label.setStyleSheet(f"color: {self.colour_manager.text}")
             
             # Error label to display in set_error function.
             self.error_label = QLabel(self)
+            self.error_label.setFont(self.font_manager.geist.regular)
             self.error_label.setText("INVALID")
             self.error_label.setStyleSheet("color: red;")
             self.error_label.hide() # Start hidden.
@@ -209,7 +218,12 @@ class LoginPanel(QWidget):
             
             # Line edit to input.
             self.line_edit = QLineEdit(self)
+            self.line_edit.setFont(self.font_manager.geist.regular)
             self.line_edit.setPlaceholderText(self.input_type.capitalize())
+            self.line_edit.setStyleSheet(
+                f"background-color: {self.colour_manager.background};"
+                f"color: {self.colour_manager.text};"
+            )
             
             # Main layout.
             self.main_layout = QVBoxLayout()
@@ -230,6 +244,18 @@ class LoginPanel(QWidget):
         def set_invalid_password(self):
             """A function to show a invalid password label above the password input."""
             self.error_label.setText("INVALID PASSWORD")
+            self.error_label.show()
+        
+        def set_label(
+                self,
+                text: str
+        ) -> None:
+            """A function to set the error label text to a specified string.
+
+            Args:
+                text (str): Text to set the label to.
+            """
+            self.error_label.setText(text)
             self.error_label.show()
             
     class Email(UserInput):
@@ -320,7 +346,18 @@ class LoginPanel(QWidget):
                     button_type (str): Type of button, login or register?
                 """
                 super().__init__(parent)
+                self.colour_manager : ColourManager = QApplication.instance().property("ColourManager")
+                self.font_manager : FontManager = QApplication.instance().property("FontManager")
+                
+                self.setMinimumHeight(50)
+            
                 self.setText(button_type.upper())
+                self.setFont(self.font_manager.geist.bold)
+                self.setStyleSheet(
+                    f"background-color: {self.colour_manager.background};"
+                    f"color: {self.colour_manager.text};"
+                    "border: 15px"
+                )    
         
         class Login(Button):
             def __init__(
@@ -385,6 +422,8 @@ class LoginPanel(QWidget):
                 else:
                     # If the password was valid - it's a successful login!
                     print("Successful login!")
+                    
+                    login_panel.parentWidget().parentWidget().login_member(member)
         
         class Register(Button):
             def __init__(
@@ -407,6 +446,8 @@ class LoginPanel(QWidget):
                 
                 # Check if the email and password fields are filled.
                 login_panel = self.parentWidget().parentWidget()
+                login_window = login_panel.parentWidget()
+                main_window = login_window.parentWidget()
                 
                 # Transform the login panel to a registration panel.
                 if login_panel.registration_showing is False:
@@ -418,27 +459,87 @@ class LoginPanel(QWidget):
                 # Create references to the inputs and lines within the login panel.
                 email_input : QWidget = login_panel.email_input
                 email_line : QLineEdit = email_input.line_edit
+                entered_email = email_line.text()
                 
                 password_input : QWidget = login_panel.password_input
                 password_line : QLineEdit = password_input.line_edit
+                entered_password = password_line.text()
                 
                 forename_input : QWidget = login_panel.forename_input
                 forename_line : QLineEdit = forename_input.line_edit
+                entered_forename = forename_line.text()
                 
                 surname_input : QWidget = login_panel.surname_input
                 surname_line : QLineEdit = surname_input.line_edit
+                entered_surname = surname_line.text()
                 
                 phone_input : QWidget = login_panel.phone_input
                 phone_line : QLineEdit = phone_input.line_edit
+                entered_phone = phone_line.text()
                 
                 # Check if there's an entered email.
+                if entered_email == "":
+                    email_input.set_none_found()
+                    
+                    return # Return early.
+                
+                else:
+                    email_input.error_label.hide() # Hide if showing.
                 
                 # Check if the email is in the database already or not.
+                if database.get_member(email = entered_email) is not None:
+                    email_input.set_label("USER EXISTS")
+                    
+                    return # Return early.v
+                
+                else:
+                    email_input.error_label.hide() # Hide if showing.
                 
                 # Check if there's an entered password.
+                if entered_password == "":
+                    password_input.set_none_found()
+                    
+                    return # Return early.
+                
+                else:
+                    password_input.error_label.hide() # Hide if showing.
                 
                 # Check if there's an entered forename.
+                if entered_forename == "":
+                    forename_input.set_none_found()
+                    
+                    return # Return early.
+                
+                else:
+                    forename_input.error_label.hide() # Hide if showing.
                 
                 # Check if there's an entered surname.
+                if entered_surname == "":
+                    surname_input.set_none_found()
+                    
+                    return # Return early.
+                
+                else:
+                    surname_input.error_label.hide() # Hide if showing.
                 
                 # Check if there's an entered phone number.
+                if entered_phone == "":
+                    phone_input.set_none_found()
+                    
+                    return
+                
+                else:
+                    phone_input.error_label.hide() # Hide if showing.
+                
+                # Once all checks have complete, add the user to the database.
+                current_member = database.add_member(Member(
+                    id = 0,
+                    forename = entered_forename,
+                    surname = entered_surname,
+                    email = entered_email,
+                    phone = entered_phone,
+                    password = entered_password
+                ))
+                
+                # Log the user into the application.
+                main_window.login_member(current_member)

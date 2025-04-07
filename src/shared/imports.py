@@ -1,5 +1,6 @@
-# Local imports.
+# Python imports.
 import sqlite3
+import random
 
 # Third-party imports.
 from PySide6.QtWidgets import (
@@ -11,8 +12,13 @@ from PySide6.QtCore import (
     QPoint, Qt
 )
 
+from PySide6.QtGui import (
+    QPixmap, QIcon
+)
+
 # Local imports.
 from src.shared.objects import *
+from src.shared.funcs import *
 from src.application.managers.database_manager import DatabaseManager
 from src.application.managers.font_manager import FontManager
 from src.application.managers.colour_manager import ColourManager

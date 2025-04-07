@@ -44,7 +44,9 @@ class DatabaseManager:
         self.cursor.execute(query)
         fetch = self.cursor.fetchone()
         
-        if fetch == "()":
+        print(fetch)
+        
+        if fetch is None:
             return None
         
         # Create a member object and return it.
@@ -90,8 +92,9 @@ class DatabaseManager:
         
         if fetched_member is None:
             # Unsuccessful insert.
+            print(f"Unable to add member to the database: {member.email}")
+            
             return False
-        
-        elif fetched_member is Member:
-            # If it's a member object.
-            return fetched_member
+
+        print(f"Member successfully added: {member.email}")
+        return fetched_member
