@@ -1,10 +1,7 @@
 from src.shared.imports import *
 
 class TopBarWidget(QWidget):
-    def __init__(
-            self,
-            parent: QWidget
-    ) -> None:
+    def __init__(self, parent: QWidget) -> None:
         """A QWidget object to act as the topbar in the gym window.
 
         Args:
@@ -33,10 +30,7 @@ class TopBarWidget(QWidget):
         self.buttons = self.Buttons(self)
     
     class Buttons(QWidget):
-        def __init__(
-                self,
-                parent: QWidget
-        ) -> None:
+        def __init__(self, parent: QWidget) -> None:
             """A QWidget subclasses, acting as the container for all buttons related to TopBar.
 
             Args:
@@ -73,11 +67,7 @@ class TopBarWidget(QWidget):
             self.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
         
         class Button(QPushButton):
-            def __init__(
-                    self,
-                    parent: QWidget,
-                    icon_src: str
-            ) -> None:
+            def __init__(self, parent: QWidget, icon_src: str) -> None:
                 """Base class for the buttons within the top bar.
 
                 Args:
@@ -90,10 +80,9 @@ class TopBarWidget(QWidget):
                 self._set_design()
             
             def _set_design(self):
-                self.setFixedSize(
-                    self.parentWidget().height(),
-                    self.parentWidget().height()
-                ) # 1:1 Ratio using top bar height.
+                """A function to set the design of each button."""
+                 # 1:1 Ratio using top bar height.
+                self.setFixedSize(self.parentWidget().height(), self.parentWidget().height())
                 
                 # Set the icon.
                 self.setIcon(QIcon(path(self.icon_src)))
@@ -106,10 +95,7 @@ class TopBarWidget(QWidget):
                 ) # Remove default button style.
         
         class ProfileButton(Button):
-            def __init__(
-                    self,
-                    parent: QWidget
-            ) -> None:
+            def __init__(self, parent: QWidget) -> None:
                 """A profile button subcless of Button, which is a QPushButton - used for displaying the profile window.
 
                 Args:
@@ -125,7 +111,8 @@ class TopBarWidget(QWidget):
             
             def _on_click(self):
                 """A function called once the button is clicked."""
-                main_window : QWidget = QApplication.instance().property("MainWindow") # Get the main window object form the QApplication.
+                # Get the main window object form the QApplication.
+                main_window : QWidget = QApplication.instance().property("MainWindow")
                 main_window.show_profile_window()
             
             def _set_icon(self):
@@ -136,10 +123,7 @@ class TopBarWidget(QWidget):
                 self.setIcon(profile_picture.scaled(self.size(), mode = Qt.TransformationMode.SmoothTransformation))
 
         class ClassesButton(Button):
-            def __init__(
-                    self,
-                    parent: QWidget
-            ) -> None:
+            def __init__(self, parent: QWidget) -> None:
                 """A classes button subclass of Button, which is a QPushButton - used for displaying the classes window.
 
                 Args:
@@ -154,14 +138,13 @@ class TopBarWidget(QWidget):
             
             def _on_click(self):
                 """A function called once the button is clicked."""
-                main_window : QWidget = QApplication.instance().property("MainWindow") # Get the main window object form the QApplication.
+                # Get the main window object form the QApplication.
+                main_window : QWidget = QApplication.instance().property("MainWindow")
+                
                 main_window.show_classes_window()
         
         class ChatButton(Button):
-            def __init__(
-                    self,
-                    parent: QWidget
-            ) -> None:
+            def __init__(self, parent: QWidget) -> None:
                 """A chat button subclass of button, which is a QPushButton - used for displaying the chat window.
 
                 Args:
@@ -176,7 +159,9 @@ class TopBarWidget(QWidget):
             
             def _on_click(self):
                 """A function called once the button is clicked."""
-                main_window : QWidget = QApplication.instance().property("MainWindow") # Get the main window object form the QApplication.
+                 # Get the main window object form the QApplication.
+                main_window : QWidget = QApplication.instance().property("MainWindow")
+                
                 main_window.show_chat_window()
         
         class LogoutButton(Button):
@@ -198,5 +183,7 @@ class TopBarWidget(QWidget):
             
             def _on_click(self):
                 """A function called once the button is clicked."""
-                main_window : QWidget = QApplication.instance().property("MainWindow") # Get the main window object form the QApplication.
+                # Get the main window object form the QApplication.
+                main_window : QWidget = QApplication.instance().property("MainWindow")
+                
                 main_window.logout_member()

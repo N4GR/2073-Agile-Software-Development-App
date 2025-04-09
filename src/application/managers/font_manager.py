@@ -9,10 +9,12 @@ class FontManager(QFontDatabase):
 
         self.geist = Geist(self)
         
-    def load_font(
-            self,
-            font_src: str
-    ) -> QFont:
+    def load_font(self, font_src: str) -> QFont:
+        """A function to load a QFont from a file.
+        
+        Args:
+            font_src (str): Path to the font file.
+        """
         font_id = self.addApplicationFont(path(font_src))
         font_family = QFontDatabase.applicationFontFamilies(font_id)[0]
         
@@ -24,9 +26,11 @@ class FontManager(QFontDatabase):
         return font        
     
 class Geist:
-    def __init__(
-            self,
-            font_manager: FontManager
-    ) -> None:
+    def __init__(self, font_manager: FontManager) -> None:
+        """Class containing QFonts from the Geist font family.
+
+        Args:
+            font_manager (FontManager): FontManager object, a subclass of QFontDatabase.
+        """
         self.regular = font_manager.load_font("/assets/fonts/GeistMonoNerdFont-Regular.otf")
         self.bold = font_manager.load_font("/assets/fonts/GeistMonoNerdFont-Bold.otf")

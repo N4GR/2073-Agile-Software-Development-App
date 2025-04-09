@@ -4,10 +4,7 @@ from src.shared.imports import *
 from src.windows.widgets.header_widget import HeaderWidget
 
 class LoginWindow(QWidget):
-    def __init__(
-            self,
-            parent: QWidget
-    ):
+    def __init__(self, parent: QWidget):
         """A QWidget subclass pertaining to the login window.
 
         Args:
@@ -38,10 +35,7 @@ class LoginWindow(QWidget):
         self.header = HeaderWidget(self)
 
 class LoginPanel(QWidget):
-    def __init__(
-            self,
-            parent: QWidget
-    ):
+    def __init__(self, parent: QWidget):
         """A subclass of QWidget, containing the panel for users to login and register.
 
         Args:
@@ -114,9 +108,7 @@ class LoginPanel(QWidget):
         """A function to change the login panel to a registration panel."""
         if self.registration_showing is False:
             # Make the login panel larger to fit the new inputs.
-            self.setFixedHeight(
-                self.parentWidget().height() * 0.7 # 70% of parent height.
-            )
+            self.setFixedHeight(self.parentWidget().height() * 0.7) # 70% of parent height.
             
             # Move the widget to accomodate for the new size.
             self.move(
@@ -147,6 +139,7 @@ class LoginPanel(QWidget):
             return # Exit early.
     
     def hide_registering(self):
+        """A function to hide the registration window."""
         if self.registration_showing is True:
             # If the registration window is showing.
             self.setFixedSize(
@@ -185,11 +178,7 @@ class LoginPanel(QWidget):
             return # Exit early.
     
     class UserInput(QWidget):
-        def __init__(
-                self,
-                parent: QWidget,
-                input_type: str
-        ):
+        def __init__(self, parent: QWidget, input_type: str):
             """A function to act as a parent class for user input.
 
             Args:
@@ -253,10 +242,7 @@ class LoginPanel(QWidget):
             self.error_label.setText("INVALID PASSWORD")
             self.error_label.show()
         
-        def set_label(
-                self,
-                text: str
-        ) -> None:
+        def set_label(self, text: str) -> None:
             """A function to set the error label text to a specified string.
 
             Args:
@@ -266,10 +252,7 @@ class LoginPanel(QWidget):
             self.error_label.show()
             
     class Email(UserInput):
-        def __init__(
-                self,
-                parent: QWidget
-        ):
+        def __init__(self, parent: QWidget):
             """A subclass of UserInput, an object pertaining to the QLineEdit input of the email.
 
             Args:
@@ -278,10 +261,7 @@ class LoginPanel(QWidget):
             super().__init__(parent, "email")
     
     class Password(UserInput):
-        def __init__(
-                self,
-                parent: QWidget
-        ):
+        def __init__(self, parent: QWidget):
             """A subclass of UserInput, an object pertaining to the QLineEdit input of the password.
 
             Args:
@@ -292,31 +272,34 @@ class LoginPanel(QWidget):
             self.line_edit.setEchoMode(QLineEdit.EchoMode.Password)
     
     class Forename(UserInput):
-        def __init__(
-                self,
-                parent: QWidget
-        ):
+        def __init__(self, parent: QWidget):
+            """A subclass of UserInput, used to display the forename of the user.
+
+            Args:
+                parent (QWidget): Parent of the Forename.
+            """
             super().__init__(parent, "forename")
     
     class Surname(UserInput):
-        def __init__(
-                self,
-                parent: QWidget
-        ):
+        def __init__(self, parent: QWidget):
+            """A subclass of UserInput, used to display the surname of the user.
+
+            Args:
+                parent (QWidget): Parent of the surname.
+            """
             super().__init__(parent, "surname")
     
     class Phone(UserInput):
-        def __init__(
-                self,
-                parent: QWidget
-        ):
+        def __init__(self, parent: QWidget):
+            """A subclass of UserInput, used to display the phone number of the user.
+
+            Args:
+                parent (QWidget): Parent of the phone number.
+            """
             super().__init__(parent, "phone")
     
     class Buttons(QWidget):
-        def __init__(
-                self,
-                parent: QWidget
-        ):
+        def __init__(self, parent: QWidget):
             """A subclass of QWidget, containing QPushButtons for the Login Panel.
 
             Args:
@@ -328,10 +311,12 @@ class LoginPanel(QWidget):
             self._set_layouts()
         
         def _set_widgets(self):
+            """A function to add widgets to the Buttons widget."""
             self.login = self.Login(self)
             self.register = self.Register(self)
         
         def _set_layouts(self):
+            """A function to set the layout of the buttons widget."""
             self.main_layout = QHBoxLayout()
         
             # Add the widgets to the layout.
@@ -341,11 +326,7 @@ class LoginPanel(QWidget):
             self.setLayout(self.main_layout)
         
         class Button(QPushButton):
-            def __init__(
-                    self,
-                    parent: QWidget,
-                    button_type: str
-            ):
+            def __init__(self, parent: QWidget, button_type: str):
                 """A subclass of QPushButton, acting as the parent class of a button within the login panel.
 
                 Args:
@@ -367,10 +348,7 @@ class LoginPanel(QWidget):
                 )    
         
         class Login(Button):
-            def __init__(
-                    self,
-                    parent: QWidget
-            ):
+            def __init__(self, parent: QWidget):
                 """A Button subclass for the login function of the buttons widget.
 
                 Args:
@@ -381,7 +359,7 @@ class LoginPanel(QWidget):
                 self.clicked.connect(self._on_click)
             
             def _on_click(self):
-                print("Login clicked!")
+                """A function called when the login button is clicked."""
                 
                 database : DatabaseManager = QApplication.instance().property("DatabaseManager")("data/gym.sqlite")
                 
@@ -433,10 +411,7 @@ class LoginPanel(QWidget):
                     login_panel.parentWidget().parentWidget().login_member(member)
         
         class Register(Button):
-            def __init__(
-                    self,
-                    parent: QWidget
-            ):
+            def __init__(self, parent: QWidget):
                 """A Button subclass for the register function of the buttons widget.
 
                 Args:
@@ -447,8 +422,7 @@ class LoginPanel(QWidget):
                 self.clicked.connect(self._on_click)
             
             def _on_click(self):
-                print("Register clicked!")
-                
+                """A function called when the registration button is clicked."""
                 database : DatabaseManager = QApplication.instance().property("DatabaseManager")("data/gym.sqlite")
                 
                 # Check if the email and password fields are filled.

@@ -6,6 +6,7 @@ from src.application.application import Application
 from src.windows.main_window import MainWindow
 
 if __name__ == "__main__":
+    # Startup function - used to check if everything is running on to continue with the application.
     startup_error = startup()
     
     if startup_error is True:

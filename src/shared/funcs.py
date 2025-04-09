@@ -27,9 +27,7 @@ def path(src: str) -> str:
         
     base_path = getattr(sys, "_MEIPASS", os.path.abspath("."))
     
-    return os.path.join(
-        base_path, src
-    )
+    return os.path.join(base_path, src)
 
 def circular_pixmap(pixmap: QPixmap) -> QPixmap:
     """A function to take a pixmap and crop an eclipse, returning the cropped image.
@@ -66,8 +64,15 @@ def circular_pixmap(pixmap: QPixmap) -> QPixmap:
     return target
 
 def get_random_profile_pixmap() -> QPixmap:
+    """A function to search through the /assets/profiles directory, returning a random image from there as a QPixmap.
+
+    Returns:
+        QPixmap: Random image found in the directory.
+    """
     profile_assets_dir = path("/assets/profiles")
-    profile_images = [f"{profile_assets_dir}/{x}" for x in os.listdir(profile_assets_dir)] # List of directories from the profiles directory - contains paths to images.
+    
+    # List of directories from the profiles directory - contains paths to images.
+    profile_images = [f"{profile_assets_dir}/{x}" for x in os.listdir(profile_assets_dir)]
     random_image = random.choice(profile_images) # Random image path from the profile images list.
     
     return QPixmap(random_image)

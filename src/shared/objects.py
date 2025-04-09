@@ -31,11 +31,7 @@ class Member:
         self.password = password
 
 class Message:
-    def __init__(
-            self,
-            member: Member,
-            text: str
-    ):
+    def __init__(self, member: Member, text: str):
         """An object containing the data of a message.
 
         Args:
@@ -46,10 +42,7 @@ class Message:
         self.text = text
 
 class Chat:
-    def __init__(
-        self,
-        chat_data: tuple
-    ):
+    def __init__(self, chat_data: tuple):
         """An object containing chat data related to a member.
 
         Args:
@@ -62,7 +55,11 @@ class Chat:
         self.messages = self.get_messages()
     
     def get_members(self) -> list[Member]:
-        """A function to retrieve the member objects inside the chat."""
+        """A function to retrieve the member objects inside the chat.
+        
+        Returns:
+            list[Member]: A list of all members in a chat.
+        """
         # Connection to the gym database to obtain member data.
         database = QApplication.instance().property("DatabaseManager")("data/gym.sqlite")
         
@@ -75,6 +72,11 @@ class Chat:
         return members
     
     def get_messages(self) -> list[Message]:
+        """A function to get all messages within a chat.
+
+        Returns:
+            list[Message]: A list of message objects from the chat.
+        """
         message_dicts = self.chat_data[2].replace("[", "").replace("]", "").split("}, ")
         
         if message_dicts[0] == "":

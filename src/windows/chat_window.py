@@ -4,10 +4,7 @@ from src.shared.imports import *
 from src.windows.widgets.topbar_widget import TopBarWidget
 
 class ChatWindow(QWidget):
-    def __init__(
-            self,
-            parent: QWidget
-    ) -> None:
+    def __init__(self, parent: QWidget) -> None:
         """A subclass of QWidget, acting as the chat window widget.
 
         Args:
@@ -52,12 +49,17 @@ class ChatWindow(QWidget):
         self.current_open_chat = CreateChat(self)
     
     def refresh_chats(self):
+        """A function to refresh all chats in the side bar."""
         self.chats.deleteLater() # Delete the chats window.
         self.chats = Chats(self) # Create a new object.
     
 class Chats(QWidget):
     def __init__(self, parent: QWidget):
-        """A subclass of QWidget, a container for buttons which are different chats the user is a part of."""
+        """A subclass of QWidget, a container for buttons which are different chats the user is a part of.
+        
+        Args:
+            parent (QWidget): Parent object of the chats widget.
+        """
         super().__init__(parent)
         self.colour_manager : ColourManager = QApplication.instance().property("ColourManager")
         
@@ -69,6 +71,7 @@ class Chats(QWidget):
         self.show()
     
     def _set_design(self):
+        """A function to set the design of a chat widget."""
         self.setFixedSize(50, self.parentWidget().height() - self.parentWidget().top_bar.height()) # Fill height of parent, fixed width.
         self.move(0, self.parentWidget().top_bar.height()) # Move under the topbar.
         
@@ -78,6 +81,7 @@ class Chats(QWidget):
         self.background_label.setStyleSheet(f"background-color: {self.colour_manager.header};")
     
     def _set_layout(self):
+        """A function to set the layout of a chat widget."""
         self.main_layout = QVBoxLayout(self)
         self.main_layout.setSpacing(0)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
@@ -130,25 +134,29 @@ class Chats(QWidget):
 
 class CreateChatButton(QPushButton):
     def __init__(self, parent: QWidget):
+        """A subclass of QPushButton, used to create a chat with another user in the side bar.
+
+        Args:
+            parent (QWidget): Parent of the create chat button.
+        """
         super().__init__(parent)
+        self._set_design()
+
+        # Add a clicked connection.
+        self.clicked.connect(self._on_click)
+    
+    def _set_design(self):
+        """A function to set design elements to the create chat button."""
         size = min(self.parentWidget().width(), self.parentWidget().height())
         self.setFixedSize(size, size)
         
         self.setIcon(QPixmap(path("/assets/icons/add.png")))
-        self.setIconSize(
-            QSize(
-                self.size().height()
-                - 5,
-                self.size().width()
-                - 5
-            )
-        )
+        self.setIconSize(QSize(self.size().height() - 5, self.size().width() - 5))
         
         self.setStyleSheet("background-color: transparent; border: none;")
     
-        self.clicked.connect(self._on_click)
-    
     def _on_click(self):
+        """A function called when the create a chat button is clicked."""
         window = self.parentWidget().parentWidget().parentWidget().parentWidget().parentWidget()
         
         if window.current_open_chat is not None:
@@ -159,12 +167,7 @@ class CreateChatButton(QPushButton):
         window.open_create_chat()
   
 class ChatButton(QPushButton):
-    def __init__(
-            self,
-            parent: QWidget,
-            chat: Chat,
-            icon_src: QPixmap
-    ):
+    def __init__(self, parent: QWidget, chat: Chat, icon_src: QPixmap):
         """A class which is a subclass of QPushButton, used to display a button for each chat.
 
         Args:
@@ -185,14 +188,7 @@ class ChatButton(QPushButton):
         self.setFixedSize(size, size)
         
         self.setIcon(self.icon_src)
-        self.setIconSize(
-            QSize(
-                self.size().height()
-                - 5,
-                self.size().width()
-                - 5
-            )
-        )
+        self.setIconSize(QSize(self.size().height() - 5, self.size().width()- 5))
         
         self.setStyleSheet("background-color: transparent; border: none;")
     
@@ -201,14 +197,11 @@ class ChatButton(QPushButton):
         self.clicked.connect(self._on_click)
     
     def _on_click(self):
+        """A function called when the chat button is clicked."""
         self.parentWidget().parentWidget().parentWidget().parentWidget().parentWidget().open_chat(self.chat)
         
 class OpenChat(QWidget):
-    def __init__(
-            self,
-            parent: QWidget,
-            chat: Chat
-    ) -> None:
+    def __init__(self, parent: QWidget, chat: Chat) -> None:
         """An OpenChat QWidget subclass to display an open chat.
 
         Args:
@@ -226,24 +219,21 @@ class OpenChat(QWidget):
         self.show()
     
     def _set_design(self):
-        self.setFixedSize(
-            self.parentWidget().width()
-            - self.parentWidget().chats.width(),
-            self.parentWidget().height()
-            - self.parentWidget().top_bar.height()
-        )
+        """A function to add design to the openchat widget."""
+        parent = self.parentWidget()
+        
+        self.setFixedSize(parent.width() - parent.chats.width(), parent.height() - parent.top_bar.height())
         
         # Move to under top bar and beside chats.
-        self.move(
-            self.parentWidget().chats.width(),
-            self.parentWidget().top_bar.height()
-        )
+        self.move(parent.chats.width(), parent.top_bar.height())
     
     def _set_widgets(self):
+        """A function to add widgets to the openchat widget."""
         self.message_contents = self.MessageContents(self, self.chat)
         self.message_box = self.MessageBox(self)
     
     def _set_layout(self):
+        """A function to set layout elements to the openchat widget."""
         self.main_layout = QVBoxLayout(self)
         self.main_layout.setSpacing(0)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
@@ -262,6 +252,7 @@ class OpenChat(QWidget):
         self.setLayout(self.main_layout)
     
     def scroll_to_bottom(self):
+        """A function to scroll down to the absolute bottom of the scroll area."""
         self.scroll_area.verticalScrollBar().setValue(self.scroll_area.verticalScrollBar().maximum() + 100) # Scroll to bottom.
     
     class MessageContents(QWidget):
@@ -273,6 +264,7 @@ class OpenChat(QWidget):
             self._set_design()
         
         def _set_layout(self):
+            """A function to add layout elements to the message contents."""
             self.main_layout = QVBoxLayout(self)
             
             # For every message in the chat, add the message widget.
@@ -282,6 +274,7 @@ class OpenChat(QWidget):
             self.setLayout(self.main_layout)
         
         def _set_design(self):
+            """A function to set the design of the message contents."""
             if self.sizeHint().height() < self.parentWidget().height():
                 if self.sizeHint().height() < 5:
                     self.setFixedHeight(100)
@@ -291,10 +284,17 @@ class OpenChat(QWidget):
             self.setFixedWidth(self.parentWidget().width())
         
         def update_size(self):
+            """A function to update the size of the message contents."""
             self.setFixedHeight(self.sizeHint().height())
         
         class MessageWidget(QWidget):
             def __init__(self, parent: QWidget, message: Message):
+                """A subclass of QWidget, used to display a message on the screen,
+
+                Args:
+                    parent (QWidget): Parent of the message widget.
+                    message (Message): Message object that's being displayed.
+                """
                 super().__init__(parent)
                 self.message = message
                 self.member = self.message.member
@@ -305,12 +305,20 @@ class OpenChat(QWidget):
                 self._set_design()
             
             def _set_design(self):
+                """A function to set the design of the message widget."""
                 self.main_layout = QVBoxLayout()
                 self.top_layout = QHBoxLayout()
                 
                 self.profile_image = QLabel(self)
                 self.profile_image.setFixedSize(50, 50)
-                self.profile_image.setPixmap(circular_pixmap(get_random_profile_pixmap()).scaled(self.profile_image.size(), mode = Qt.TransformationMode.SmoothTransformation))
+                self.profile_image.setPixmap(
+                    circular_pixmap(
+                        get_random_profile_pixmap()
+                    ).scaled(
+                        self.profile_image.size(),
+                        mode = Qt.TransformationMode.SmoothTransformation
+                    )
+                )
                 
                 self.member_name = QLabel(self)
                 self.member_name.setText(f"{self.member.forename.capitalize()} {self.member.surname.capitalize()}")
@@ -340,6 +348,11 @@ class OpenChat(QWidget):
 
     class MessageBox(QWidget):
         def __init__(self, parent: QWidget):
+            """A subclass of QWidget, used as the message box for users to type in their message.
+            
+            Args:
+                parent (QWidget): Parent of the MessageBox, typically a QWidget.
+            """
             super().__init__(parent)
             self.profile_picture : QPixmap = QApplication.instance().property("EclipseProfilePicture")
             self.colour_manager : ColourManager = QApplication.instance().property("ColourManager")
@@ -355,7 +368,12 @@ class OpenChat(QWidget):
             # User profile picture.
             self.profile_label = QLabel(self)
             self.profile_label.setFixedSize(50, 50)
-            self.profile_label.setPixmap(self.profile_picture.scaled(self.profile_label.size(), mode = Qt.TransformationMode.SmoothTransformation))
+            self.profile_label.setPixmap(
+                self.profile_picture.scaled(
+                    self.profile_label.size(),
+                    mode = Qt.TransformationMode.SmoothTransformation
+                )
+            )
             
             # Send button.
             self.send_button = QPushButton(self)
@@ -371,12 +389,16 @@ class OpenChat(QWidget):
             self.text_edit.setFixedWidth(self.width() - self.profile_label.width() - self.send_button.width())
             self.text_edit.move(self.profile_label.width(), 0)
             self.text_edit.setPlaceholderText("Message a friend!")
-            self.text_edit.setStyleSheet(f"background-color: {self.colour_manager.text}; color: {self.colour_manager.header}")
+            self.text_edit.setStyleSheet(
+                f"background-color: {self.colour_manager.text};"
+                f"color: {self.colour_manager.header}"
+            )
             self.text_edit.setFont(self.font_manager.geist.regular)
             
             self.send_button.move(self.text_edit.width() + self.profile_label.width(), 0)
         
         def _send_message(self):
+            """A function to send a message to user."""
             if self.text_edit.toPlainText() == "":
                 return # Return early.
             
@@ -406,6 +428,11 @@ class OpenChat(QWidget):
 
 class CreateChat(QWidget):
     def __init__(self, parent: QWidget):
+        """A subclass of QWidget, used to create a chat to another user using their email address.
+        
+        Args:
+            parent (QWidget): Parent object of the createchat, typically the Chat window.
+        """
         super().__init__(parent)
         self._set_design()
         self._set_widgets()
@@ -414,24 +441,25 @@ class CreateChat(QWidget):
         self.show()
     
     def _set_design(self):
+        """A function to set the design of the create chat widget."""
         parent = self.parentWidget()
-        self.setFixedSize(
-            parent.width() - parent.chats.width(),
-            parent.height() - parent.top_bar.height()
-        )
+        self.setFixedSize(parent.width() - parent.chats.width(), parent.height() - parent.top_bar.height())
         
-        self.move(
-            parent.chats.width(),
-            parent.top_bar.height()
-        )
+        self.move(parent.chats.width(), parent.top_bar.height())
     
     def _set_widgets(self):
+        """A function to set relevant widgets to the create chat widget."""
         self.create_button = self.CreateButton(self)
         self.email_input = self.EmailInput(self)
         self.error_label = self.ErrorLabel(self)
     
     class EmailInput(QLineEdit):
         def __init__(self, parent: QWidget):
+            """A subclass of QLineEdit, used for the user to input an email of the user they'd like to message.
+            
+            Args:
+                parent (QWidget): Parent of the email input, typically a create chat widget.
+            """
             super().__init__(parent)
             self.colour_manager : ColourManager = QApplication.instance().property("ColourManager")
             
@@ -450,14 +478,16 @@ class CreateChat(QWidget):
     
     class CreateButton(QPushButton):
         def __init__(self, parent: QWidget):
+            """A subclass of QPushButton, used as a button to create a chat with another user.
+            
+            Args:
+                parent (QWidget): Parent of the create button, typically the createChat widget.
+            """
             super().__init__(parent)
             self.colour_manager : ColourManager = QApplication.instance().property("ColourManager")
             
             self.setFixedSize(50, 50)
-            self.move(
-                parent.width() - self.width(),
-                0
-            )
+            self.move(parent.width() - self.width(), 0)
             
             self.setIcon(QPixmap(path("/assets/icons/add.png")))
             self.setIconSize(self.size())
@@ -470,6 +500,7 @@ class CreateChat(QWidget):
             self.clicked.connect(self._on_click)
         
         def _on_click(self):
+            """A function called when the create button is clicked."""
             parent = self.parentWidget()
             window = parent.parentWidget()
             
@@ -545,6 +576,11 @@ class CreateChat(QWidget):
     
     class ErrorLabel(QLabel):
         def __init__(self, parent: QWidget):
+            """A subclass of QLabel, used to display an error label on the creation of a chat.
+            
+            Args:
+                parent (QWidget): Parent of the error label, typically a createChat widget.
+            """
             super().__init__(parent)
             self.hide()
             self.font_manager : FontManager = QApplication.instance().property("FontManager")
@@ -559,10 +595,7 @@ class CreateChat(QWidget):
             self.update_size()
         
         def update_size(self):
+            """A function to update the size of the error label, usually triggered when the text is updated."""
             self.setFixedSize(self.sizeHint())
             
-            self.move(
-                self.parentWidget().email_input.width()
-                - self.width(),
-                0  
-            ) # Right top of email input.
+            self.move(self.parentWidget().email_input.width() - self.width(), 0) # Right top of email input.

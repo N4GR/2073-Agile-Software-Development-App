@@ -5,6 +5,11 @@ import sqlite3
 from src.shared.funcs import path
 
 def startup() -> bool:
+    """A function usedd in startup to check if everything is working as it should be.
+
+    Returns:
+        bool: True on fail, False of pass.
+    """
     required_databases = ["chat.sqlite", "gym.sqlite"]
     database_list = os.listdir(path("/data"))
     

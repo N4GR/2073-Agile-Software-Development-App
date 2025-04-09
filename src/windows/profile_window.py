@@ -4,10 +4,7 @@ from src.shared.imports import *
 from src.windows.widgets.topbar_widget import TopBarWidget
 
 class ProfileWindow(QWidget):
-    def __init__(
-            self,
-            parent: QWidget
-    ) -> None:
+    def __init__(self, parent: QWidget) -> None:
         """A subclass of QWidget, acting as the profile window widget.
 
         Args:
@@ -47,15 +44,18 @@ class ProfileWindow(QWidget):
             self._update_design()
         
         def _set_design(self):
+            """A function to add design to the info container."""
             self.setFixedWidth(self.parentWidget().width())
         
         def _set_widgets(self):
+            """A function to add widgets to the info container."""
             self.profile_image_label = self.ProfileImage(self)
             self.name_label = self.NameLabel(self)
             self.email_label = self.EmailLabel(self)
             self.phone_label = self.PhoneLabel(self)
         
         def _set_layout(self):
+            """A function to set the layout elements to the info container."""
             self.main_layout = QVBoxLayout()
             
             # Add the widgets to the layout.
@@ -68,17 +68,19 @@ class ProfileWindow(QWidget):
         
         def _update_design(self):
             """A function to be called once the widgets have been added, for resizing and moving relative to new size."""
-            self.setFixedHeight(self.sizeHint().height()) # Set the height of the widget relative to the items within the layout.
+            # Set the height of the widget relative to the items within the layout.
+            self.setFixedHeight(self.sizeHint().height())
             
             # Move the container to the centre of the profile window.
-            self.move(
-                0,
-                (self.parentWidget().height() / 2)
-                - (self.height() / 2)
-            )
+            self.move(0, (self.parentWidget().height() / 2) - (self.height() / 2))
     
         class ProfileImage(QLabel):
             def __init__(self, parent: QWidget):
+                """A subclass of QLabel, used to display the profile image of a user.
+                
+                Args:
+                    parent (QWidget): Parent of the QLabel.
+                """
                 super().__init__(parent)
                 self.setFixedSize(200, 200)
                 
@@ -89,6 +91,11 @@ class ProfileWindow(QWidget):
         
         class NameLabel(QLabel):
             def __init__(self, parent: QWidget):
+                """A subclass of QLabel, used to display the name of a user.
+                
+                Args:
+                    parent (QWidget): Parent of the NameLabel.
+                """
                 super().__init__(parent)
                 logged_member : Member = QApplication.instance().property("LoggedMember") # Get the logged in member from QApplication.
                 colour_manager : ColourManager = QApplication.instance().property("ColourManager") # Get the colour manager from QApplication.
@@ -109,6 +116,11 @@ class ProfileWindow(QWidget):
         
         class EmailLabel(QLabel):
             def __init__(self, parent: QWidget):
+                """A subclass of QLabel, used to display the email of a user.
+                
+                Args:
+                    parent (QWidget): Parent of the email label.
+                """
                 super().__init__(parent)
                 logged_member : Member = QApplication.instance().property("LoggedMember") # Get the logged in member from QApplication.
                 colour_manager : ColourManager = QApplication.instance().property("ColourManager") # Get the colour manager from QApplication.
@@ -129,6 +141,11 @@ class ProfileWindow(QWidget):
         
         class PhoneLabel(QLabel):
             def __init__(self, parent: QWidget):
+                """Subclass of QLabel, used to display the Phone number of a user.
+                
+                Args:
+                    parent (QWidget): Parent of the phone label.
+                """
                 super().__init__(parent)
                 logged_member : Member = QApplication.instance().property("LoggedMember") # Get the logged in member from QApplication.
                 colour_manager : ColourManager = QApplication.instance().property("ColourManager") # Get the colour manager from QApplication.
@@ -149,7 +166,11 @@ class ProfileWindow(QWidget):
 
     class BottomBar(QWidget):
         def __init__(self, parent: QWidget):
-            """A function containing the bottom bar, which will have buttons for the profile."""
+            """A function containing the bottom bar, which will have buttons for the profile.
+            
+            Args:
+                parent (QWidget): Parent object of the bottom bar.
+            """
             super().__init__(parent)
             self.colour_manager : ColourManager = QApplication.instance().property("ColourManager")
             
@@ -158,6 +179,7 @@ class ProfileWindow(QWidget):
             self._set_layout()
         
         def _set_design(self):
+            """A function to add design to the bottom bar."""
             self.setFixedSize(
                 self.parentWidget().width(),
                 50
@@ -176,10 +198,12 @@ class ProfileWindow(QWidget):
             self.background_widget.setStyleSheet(f"background-color: {self.colour_manager.header}")
         
         def _set_widgets(self):
+            """A function to add widgets to the bottom bar."""
             self.billing_button = self.BillingButton(self)
             self.current_classes_button = self.CurrentClassesButton(self)
         
         def _set_layout(self):
+            """A function to set the layout of the bottom bar."""
             self.main_layout = QHBoxLayout()
             self.main_layout.setContentsMargins(0, 0, 0, 0)
             

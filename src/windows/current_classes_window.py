@@ -4,10 +4,7 @@ from src.shared.imports import *
 from src.windows.widgets.topbar_widget import TopBarWidget
 
 class CurrentClassesWindow(QWidget):
-    def __init__(
-            self,
-            parent: QWidget
-    ) -> None:
+    def __init__(self, parent: QWidget) -> None:
         """A subclass of QWidget, acting as the current classes window widget.
 
         Args:

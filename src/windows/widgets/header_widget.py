@@ -1,10 +1,12 @@
 from src.shared.imports import *
 
 class HeaderWidget(QWidget):
-    def __init__(
-            self,
-            parent: QWidget
-    ) -> None:
+    def __init__(self, parent: QWidget) -> None:
+        """A class object of the header - used in the login window to display company profile.
+
+        Args:
+            parent (QWidget): Parent of the header widget.
+        """
         super().__init__(parent)
         
         self.colour_manager : ColourManager = QApplication.instance().property("ColourManager")
@@ -16,6 +18,7 @@ class HeaderWidget(QWidget):
         self.show()
     
     def _set_design(self):
+        """A function to set the design of the header."""
         self.setFixedWidth(self.parentWidget().width())
         self.setFixedHeight(50)
         
@@ -40,6 +43,7 @@ class HeaderWidget(QWidget):
                 self.logo_label.width() - 20
             )
         )
+        
         self.logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
         # Title label.

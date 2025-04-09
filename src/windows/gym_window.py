@@ -4,10 +4,7 @@ from src.shared.imports import *
 from src.windows.widgets.topbar_widget import TopBarWidget
 
 class GymWindow(QWidget):
-    def __init__(
-            self,
-            parent: QWidget
-    ) -> None:
+    def __init__(self, parent: QWidget) -> None:
         """A QWidget object to act as the gym window once the user logs in.
 
         Args:

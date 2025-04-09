@@ -45,10 +45,7 @@ class MainWindow(QWidget):
         # Change the window title to reflect new window.
         self.setWindowTitle(f"{self.application_name} - Login")
     
-    def login_member(
-            self,
-            member: Member
-    ) -> None:
+    def login_member(self, member: Member) -> None:
         """Function to log a user into the application.
 
         Args:
@@ -170,10 +167,7 @@ class MainWindow(QWidget):
         # Set the current window.
         self.current_window = self.current_classes_window
 
-    def move_to_screen(
-            self,
-            name: str
-    ):
+    def move_to_screen(self, name: str):
         """A function to move the widget to a different screen with a given name.
 
         Args:
