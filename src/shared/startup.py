@@ -31,23 +31,21 @@ def startup() -> bool:
         with open(schema_path, "r") as file:
             sql_query = file.read()
         
-        # Create the database with a cursor.
-        connection = sqlite3.connect(path(f"/data/{database}"))
-        cursor = connection.cursor()
+        # Get seperate queries from the file.
+        sql_queries = sql_query.split("\n")
         
-        # Try and execute the query from the schema to the database.
-        try:
-            cursor.execute(sql_query)
+        # For each query, call the command.
+        for query in sql_queries:
+            # Create the database with a cursor.
+            connection = sqlite3.connect(path(f"/data/{database}"))
+            cursor = connection.cursor()
+            
+            print(query)
+            
+            # Try and execute the query from the schema to the database.
+            cursor.execute(query)
             connection.commit()
 
-            print(f"Successfully created: {database}")
-        
-        except sqlite3.Error as error:
-            print(f"Error creating database - {database}: {error}")
-            
-            return True # Error occoured, exit starting program.
-        
-        finally:
-            connection.close()
+        print(f"Successfully created: {database}")
     
     return False

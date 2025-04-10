@@ -117,8 +117,13 @@ class Chats(QWidget):
         
         # Create a chat icon for each chat the member is a part of.
         for chat in chats:
-            random_profile = circular_pixmap(get_random_profile_pixmap())
-            button = ChatButton(self, chat, random_profile)
+            for chat_member in chat.members:
+                if chat_member != logged_member:
+                    receiver_member = chat_member
+            
+            receiver_profile = circular_pixmap(QPixmap(path(f"/assets/profiles/{receiver_member.profile}")))
+            
+            button = ChatButton(self, chat, receiver_profile)
             
             self.add_widget(button)
         
@@ -311,9 +316,11 @@ class OpenChat(QWidget):
                 
                 self.profile_image = QLabel(self)
                 self.profile_image.setFixedSize(50, 50)
+                
+                # Set the profile image to the message members profile picture.
                 self.profile_image.setPixmap(
                     circular_pixmap(
-                        get_random_profile_pixmap()
+                        QPixmap(path(f"/assets/profiles/{self.member.profile}"))
                     ).scaled(
                         self.profile_image.size(),
                         mode = Qt.TransformationMode.SmoothTransformation

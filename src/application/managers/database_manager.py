@@ -41,7 +41,7 @@ class DatabaseManager:
             return None
         
         # Create a member object and return it.
-        return Member(fetch[0], fetch[1], fetch[2], fetch[3], fetch[4], fetch[5])
+        return Member(fetch[0], fetch[1], fetch[2], fetch[3], fetch[4], fetch[5], fetch[6], fetch[7])
     
     def add_member(self, member: Member) -> bool | Member:
         """A function to add a member to the members table.
@@ -52,10 +52,16 @@ class DatabaseManager:
         Returns:
             Member | None: If the member was added to the database successfully, it will return a Member object. if it isn't it will return False.
         """
-        query = "INSERT INTO members (forename, surname, email, phone, password) VALUES (?, ?, ?, ?, ?)"
+        query = "INSERT INTO members (forename, surname, email, phone, password, is_tutor, profile) VALUES (?, ?, ?, ?, ?, ?, ?)"
         
          # Add the user to the database.
-        self.cursor.execute(query, (member.forename, member.surname, member.email, member.phone, member.password))
+        self.cursor.execute(
+            query,
+            (
+                member.forename, member.surname, member.email,
+                member.phone, member.password, 0, member.profile
+            )
+        )
         
         # Commit the insert.
         self.connection.commit()
@@ -124,3 +130,27 @@ class DatabaseManager:
         fetch = self.cursor.fetchone()
         
         return fetch
+    
+    def get_all_classes(self) -> list[AvailableClass]:
+        """A function to retrieve all available classes from the database as a list of class objects.
+        
+        Returns:
+            list[AvailableClass]: An object containing data related to the available class.
+        """
+        self.cursor.execute("SELECT * FROM classes")
+        fetch = self.cursor.fetchall()
+        
+        available_classes : list[AvailableClass] = []
+        for fetch_data in fetch:
+            class_data = {
+                "id": fetch_data[0],
+                "tutor_id": fetch_data[1],
+                "applied_members": fetch_data[2],
+                "title": fetch_data[3],
+                "description": fetch_data[4],
+                "start_date": fetch_data[5]
+            }
+            
+            available_classes.append(AvailableClass(class_data))
+        
+        return available_classes

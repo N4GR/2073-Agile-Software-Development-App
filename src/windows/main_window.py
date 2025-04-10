@@ -34,7 +34,7 @@ class MainWindow(QWidget):
         # Set the window icon.
         self.setWindowIcon(QPixmap(path("/assets/logo.png")))
     
-        self.move_to_screen("Acer P226HQ")
+        #self.move_to_screen("Acer P226HQ")
     
     def _set_widgets(self):
         """A function to load widgets into the widget."""
@@ -57,11 +57,11 @@ class MainWindow(QWidget):
         QApplication.instance().setProperty("LoggedMember", member)
         
         # Create a random profile image for the user and set it to a property in QApplication.
-        random_profile = get_random_profile_pixmap()
-        QApplication.instance().setProperty("ProfilePicture", random_profile)
+        user_profile = QPixmap(path(f"/assets/profiles/{member.profile}"))
+        QApplication.instance().setProperty("ProfilePicture", user_profile)
         
         # Crop the profile into an eclipse and set set it as a property too.
-        eclipse_profile = circular_pixmap(random_profile)
+        eclipse_profile = circular_pixmap(user_profile)
         QApplication.instance().setProperty("EclipseProfilePicture", eclipse_profile)
         
         # Delete the current window being displayed.
@@ -176,9 +176,8 @@ class MainWindow(QWidget):
         for screen in QApplication.screens(): # Iterate through application screens.
             if screen.name() == name:
                 screen_centre = screen.geometry().center() # Centre point of screen.
-                centre = QPoint(
-                    screen_centre.x() - (self.width() / 2),
-                    screen_centre.y() - (self.height() / 2)
-                ) # Centre point of the screen with the widget in the centre.
+                
+                # Centre point of the screen with the widget in the centre.
+                centre = QPoint(screen_centre.x() - (self.width() / 2), screen_centre.y() - (self.height() / 2))
                 
                 self.move(centre) # Move to adjusted centre point.

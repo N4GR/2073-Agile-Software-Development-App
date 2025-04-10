@@ -51,6 +51,11 @@ class LoginPanel(QWidget):
         self._set_design()
         self._set_widgets()
         self._set_layouts()
+        
+        # Set new size.
+        self.setFixedHeight(self.sizeHint().height())
+        self.background_label.setFixedSize(self.size())
+        self.centre_widget(y_offset = -30)
     
     def _set_design(self):
         """A function to set the design of a widget."""
@@ -60,13 +65,7 @@ class LoginPanel(QWidget):
         )
         
         # Move the widget to the centre of the window.
-        self.move(
-            (self.parentWidget().width() / 2)
-            - (self.width() / 2),
-            (self.parentWidget().height() / 2)
-            - (self.height() / 2)
-            - 30 # -30px offset.
-        )
+        self.centre_widget(y_offset = -30)
         
         # Create a background label for the widget with a fixed colour.
         self.background_label = QLabel(self)
@@ -82,19 +81,27 @@ class LoginPanel(QWidget):
         self.email_input = self.Email(self)
         self.password_input = self.Password(self)
         
+        self.login_input_height = 50 # When the user is logging in, the input box expands.
+        self.email_input.line_edit.setFixedHeight(self.login_input_height)
+        self.password_input.line_edit.setFixedHeight(self.login_input_height)
+        
         # For registering a user.
         self.forename_input = self.Forename(self)
         self.forename_input.hide()
         self.surname_input = self.Surname(self)
         self.surname_input.hide()
         self.phone_input = self.Phone(self)
-        self.phone_input.hide()
+        self.phone_input.hide()        
+        self.profile_selection = self.ProfileSelection(self)
+        self.profile_selection.hide()
         
         self.buttons = self.Buttons(self)
     
     def _set_layouts(self):
         """A function to set the layouts of a widget."""
         self.main_layout = QVBoxLayout()
+        self.main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.main_layout.setContentsMargins(3, 0, 3, 0)
         
         # Add the widgets to the layouts.
         self.main_layout.addWidget(self.email_input)
@@ -104,24 +111,23 @@ class LoginPanel(QWidget):
         
         self.setLayout(self.main_layout)
     
+    def centre_widget(self, x_offset : float = 0, y_offset : float = 0):
+        """A function to move the widget in the centre with a given offset.
+        
+        Args:
+            x_offset (float): Offset to move the x position by.
+            y_offset (float): Offset to move the y position by.
+        """
+        self.move(
+            (self.parentWidget().width() / 2)
+            - (self.width() / 2) + x_offset,
+            (self.parentWidget().height() / 2)
+            - (self.height() / 2) + y_offset
+        )
+    
     def set_registering(self):
         """A function to change the login panel to a registration panel."""
-        if self.registration_showing is False:
-            # Make the login panel larger to fit the new inputs.
-            self.setFixedHeight(self.parentWidget().height() * 0.7) # 70% of parent height.
-            
-            # Move the widget to accomodate for the new size.
-            self.move(
-                (self.parentWidget().width() / 2)
-                - (self.width() / 2),
-                (self.parentWidget().height() / 2)
-                - (self.height() / 2)
-                - 30 # -30px offset.
-            )
-            
-            # Resize the background label to accomodate for the new size.
-            self.background_label.setFixedSize(self.size())
-            
+        if self.registration_showing is False: 
             self.main_layout.insertWidget(2, self.forename_input)
             self.forename_input.show()
             
@@ -131,7 +137,20 @@ class LoginPanel(QWidget):
             self.main_layout.insertWidget(4, self.phone_input)
             self.phone_input.show()
             
+            self.main_layout.insertWidget(5, self.profile_selection)
+            self.profile_selection.show()
+            
+            # Set the login inputs to the size of the other inputs.
+            self.email_input.line_edit.setFixedHeight(self.phone_input.line_edit.height())
+            self.password_input.line_edit.setFixedHeight(self.phone_input.line_edit.height())
+            
             self.registration_showing = True
+            
+            # Make the login panel fit the new contents.
+            self.setFixedHeight(self.sizeHint().height())
+            self.background_label.setFixedSize(self.size())
+            
+            self.centre_widget(y_offset = 25)
             
         else:
             print("Registration panel already showing!")
@@ -141,36 +160,31 @@ class LoginPanel(QWidget):
     def hide_registering(self):
         """A function to hide the registration window."""
         if self.registration_showing is True:
-            # If the registration window is showing.
-            self.setFixedSize(
-                self.parentWidget().width() * 0.9, # 90% of parent width.
-                self.parentWidget().height() * 0.5 # 50% of parent height.
-            )
-            
-            # Move the widget to the centre of the window.
-            self.move(
-                (self.parentWidget().width() / 2)
-                - (self.width() / 2),
-                (self.parentWidget().height() / 2)
-                - (self.height() / 2)
-                - 30 # -30px offset.
-            )
-            
-            # Resize the background label to accomodate for the new size.
-            self.background_label.setFixedSize(self.size())
-            
             # Remove the registration widgets from the login panel.
             self.main_layout.removeWidget(self.forename_input)
             self.main_layout.removeWidget(self.surname_input)
             self.main_layout.removeWidget(self.phone_input)
+            self.main_layout.removeWidget(self.profile_selection)
             
             # Hide the widgets again.
             self.forename_input.hide()
             self.surname_input.hide()
             self.phone_input.hide()
+            self.profile_selection.hide()
+            
+            # Reset login inputs back to their default size.
+            self.email_input.line_edit.setFixedHeight(self.login_input_height)
+            self.password_input.line_edit.setFixedHeight(self.login_input_height)
             
             # Set the variable back to False.
             self.registration_showing = False
+            
+            # Make the login panel fit the new contents.
+            self.setFixedHeight(self.sizeHint().height())
+            self.background_label.setFixedSize(self.size())
+            
+            # Move back to centre.
+            self.centre_widget(y_offset = -30)
                     
         else:
             print("Can't hide the registration window if it's not showing!")
@@ -191,15 +205,6 @@ class LoginPanel(QWidget):
             self.colour_manager : ColourManager = QApplication.instance().property("ColourManager")
             self.font_manager : FontManager = QApplication.instance().property("FontManager")
             
-            # Label for the name of the input type.
-            self.name_label = QLabel(self)
-            self.name_label.setFont(self.font_manager.geist.bold)
-            self.name_label_font = self.name_label.font()
-            self.name_label_font.setPointSize(15)
-            self.name_label.setFont(self.name_label_font)
-            self.name_label.setText(self.input_type.upper())
-            self.name_label.setStyleSheet(f"color: {self.colour_manager.text}")
-            
             # Error label to display in set_error function.
             self.error_label = QLabel(self)
             self.error_label.setFont(self.font_manager.geist.regular)
@@ -207,13 +212,9 @@ class LoginPanel(QWidget):
             self.error_label.setStyleSheet("color: red;")
             self.error_label.hide() # Start hidden.
             
-            # Layout for the labels.
-            self.label_layout = QHBoxLayout()
-            self.label_layout.addWidget(self.name_label, alignment = Qt.AlignmentFlag.AlignLeft)
-            self.label_layout.addWidget(self.error_label, alignment = Qt.AlignmentFlag.AlignRight)
-            
             # Line edit to input.
             self.line_edit = QLineEdit(self)
+            self.line_edit.setFixedHeight(30)
             self.line_edit.setFont(self.font_manager.geist.regular)
             self.line_edit.setPlaceholderText(self.input_type.capitalize())
             self.line_edit.setStyleSheet(
@@ -221,12 +222,18 @@ class LoginPanel(QWidget):
                 f"color: {self.colour_manager.text};"
             )
             
-            # Main layout.
-            self.main_layout = QVBoxLayout()
-            self.main_layout.addLayout(self.label_layout)
-            self.main_layout.addWidget(self.line_edit, alignment = Qt.AlignmentFlag.AlignTop)
+            self.main_layout = QHBoxLayout()
+            self.main_layout.addWidget(self.line_edit)
+            
+            self.error_label.raise_()
             
             self.setLayout(self.main_layout)
+            
+            # Move the error label centre-right of the line edit.
+            self.error_label.move(
+                self.sizeHint().width() - self.error_label.sizeHint().width(),
+                0
+            )
         
         def set_error(self):
             """A function to set the user input error label to be shown."""
@@ -298,6 +305,90 @@ class LoginPanel(QWidget):
             """
             super().__init__(parent, "phone")
     
+    class ProfileSelection(QWidget):
+        def __init__(self, parent: QWidget):
+            super().__init__(parent)
+            self.selected_profile = os.path.abspath((f"{path("/assets/profiles")}/1.png"))
+            self.max_rows = 4
+            self.max_columns = 4
+            
+            self.listed_profiles : dict = {}
+            
+            self._set_design()
+            self._set_layout()
+            
+            self.add_profile_widgets()
+        
+        def _set_design(self):
+            self.setFixedHeight(200)
+        
+        def _set_layout(self):
+            self.main_layout = QGridLayout()
+            
+            self.setLayout(self.main_layout)
+        
+        def add_profile_widgets(self):
+            """A function to add profile widgets to the grid layout."""
+            profiles_dir = path("/assets/profiles")
+            
+            for row in range(self.max_rows):
+                for column in range(self.max_columns):
+                    item_count = (self.max_columns * (row) + column) + 1
+                    profile_dir = os.path.abspath(f"{profiles_dir}/{item_count}.png")
+
+                    self.listed_profiles[profile_dir] = {"row": row, "column": column}
+                    
+                    self.main_layout.addWidget(self.ProfileButton(self, icon_src = profile_dir), row, column)
+        
+        def set_selected_profile(self, profile_dir: str):
+            current_selected = self.listed_profiles[self.selected_profile]
+            profile_to_select = self.listed_profiles[profile_dir]
+            
+            if profile_dir == self.selected_profile:
+                return # Return early if selecting the same profile.
+            
+            # Remove the old border of the old selected icon.
+            old_selected = self.main_layout.itemAtPosition(current_selected["row"], current_selected["column"]).widget()
+            old_selected.setStyleSheet("background-color: transparent;")
+            
+            # Add the new border to the new selected icon.
+            new_selected = self.main_layout.itemAtPosition(profile_to_select["row"], profile_to_select["column"]).widget()
+            new_selected.setStyleSheet(
+                "border-radius: 12px;"
+                "background-color: green;"
+            )
+            
+            # Set the selected profile variable.
+            self.selected_profile = profile_dir
+        
+        class ProfileButton(QPushButton):
+            def __init__(self, parent: QWidget, icon_src: str):
+                super().__init__(parent)
+                self.icon_src = icon_src
+                
+                self._set_design()
+                
+                self.clicked.connect(self._on_click)
+
+            def _set_design(self):
+                self.setFixedSize(50, 50)
+                
+                self.setIcon(QPixmap(self.icon_src))
+                self.setIconSize(QSize(
+                    self.size().width() - 5,
+                    self.size().height() - 5
+                ))
+                
+                self.setStyleSheet(
+                    "border-radius: 12px;"
+                    "background-color: transparent;"
+                ) # Circular border.
+            
+            def _on_click(self):
+                """A function called when the profile button is clicked."""
+                parent = self.parentWidget()
+                parent.set_selected_profile(self.icon_src)
+
     class Buttons(QWidget):
         def __init__(self, parent: QWidget):
             """A subclass of QWidget, containing QPushButtons for the Login Panel.
@@ -318,6 +409,8 @@ class LoginPanel(QWidget):
         def _set_layouts(self):
             """A function to set the layout of the buttons widget."""
             self.main_layout = QHBoxLayout()
+            self.main_layout.setContentsMargins(20, 0, 20, 10)
+            self.main_layout.setSpacing(20)
         
             # Add the widgets to the layout.
             self.main_layout.addWidget(self.login)
@@ -344,7 +437,7 @@ class LoginPanel(QWidget):
                 self.setStyleSheet(
                     f"background-color: {self.colour_manager.background};"
                     f"color: {self.colour_manager.text};"
-                    "border: 15px"
+                    "border-radius: 20px"
                 )    
         
         class Login(Button):
@@ -458,6 +551,8 @@ class LoginPanel(QWidget):
                 phone_line : QLineEdit = phone_input.line_edit
                 entered_phone = phone_line.text()
                 
+                selected_profile : str = login_panel.profile_selection.selected_profile
+                
                 # Check if there's an entered email.
                 if entered_email == "":
                     email_input.set_none_found()
@@ -512,6 +607,8 @@ class LoginPanel(QWidget):
                 else:
                     phone_input.error_label.hide() # Hide if showing.
                 
+                profile_file_name = os.path.basename(selected_profile)
+                
                 # Once all checks have complete, add the user to the database.
                 current_member = database.add_member(Member(
                     id = 0,
@@ -519,7 +616,9 @@ class LoginPanel(QWidget):
                     surname = entered_surname,
                     email = entered_email,
                     phone = entered_phone,
-                    password = entered_password
+                    password = entered_password,
+                    is_tutor = False,
+                    profile = profile_file_name
                 ))
                 
                 # Log the user into the application.

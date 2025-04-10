@@ -1,5 +1,7 @@
 # Python imports
 import json
+import ast
+from datetime import datetime
 
 # Third-party imports.
 from PySide6.QtWidgets import QApplication
@@ -12,7 +14,9 @@ class Member:
             surname: str,
             email: str,
             phone: str,
-            password: str
+            password: str,
+            is_tutor: bool,
+            profile: str
     ):
         """An object containing data related to a member.
 
@@ -29,6 +33,8 @@ class Member:
         self.email = email
         self.phone = phone
         self.password = password
+        self.is_tutor = is_tutor
+        self.profile = profile
 
 class Message:
     def __init__(self, member: Member, text: str):
@@ -100,3 +106,20 @@ class Chat:
                     messages.append(Message(member, message["text"]))
         
         return messages
+
+class AvailableClass:
+    def __init__(self, class_data: dict):
+        """A class object containing the data of an available class from the classes database.
+
+        Args:
+            chat_data (tuple): Data retrieved from the classes database.
+        """
+        self.chat_data = class_data
+        self.chat_id : int = class_data["id"]
+        self.tutor_id : int = class_data["tutor_id"]
+        self.title : str = class_data["title"]
+        self.description : str = class_data["description"]
+        self.start_date = datetime.strptime(class_data["start_date"], "%Y-%m-%d %H:%M")
+        
+        # Retrieve the applied memebrs as a list from a string.
+        self.applied_members : list[int] = ast.literal_eval(class_data["applied_members"])
