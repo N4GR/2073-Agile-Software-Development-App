@@ -22,8 +22,19 @@ def path(src: str) -> str:
         src = src[1:]
         
     base_path = getattr(sys, "_MEIPASS", os.path.abspath("."))
+    path = os.path.join(base_path, src)
     
-    return os.path.join(base_path, src)
+    # If there's a file found in the path.
+    if os.path.isfile(path):
+        return path
+    
+    # If there's a directory found in the path.
+    elif os.path.isdir(path):
+        return path
+    
+    # If there isn't, it might be a relative path outside the packaged file - return absolute path.
+    else:
+        return os.path.abspath(src)
 
 def circular_pixmap(pixmap: QPixmap) -> QPixmap:
     """A function to take a pixmap and crop an eclipse, returning the cropped image.

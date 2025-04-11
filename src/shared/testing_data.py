@@ -11,8 +11,8 @@ from src.shared.funcs import path
 
 class TestingData:
     def __init__(self):
-        self.chat_connection = sqlite3.connect("data/chat.sqlite")
-        self.gym_connection = sqlite3.connect("data/gym.sqlite")
+        self.chat_connection = sqlite3.connect(path("data/chat.sqlite"))
+        self.gym_connection = sqlite3.connect(path("data/gym.sqlite"))
         
         self.chat_cursor = self.chat_connection.cursor()
         self.gym_cursor = self.gym_connection.cursor()
