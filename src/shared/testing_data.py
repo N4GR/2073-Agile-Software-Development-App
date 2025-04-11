@@ -4,6 +4,7 @@ import sqlite3
 from faker import Faker
 import random
 import os
+from datetime import datetime, timedelta
 
 from src.shared.objects import Member
 from src.shared.funcs import path
@@ -21,9 +22,11 @@ class TestingData:
     
         self.member_count = 100
         self.chats_per_member = 10
+        self.classes_to_generate = 10
         
         self.add_members()
         self.add_chats()
+        self.add_classes()
     
     def add_members(self):
         # Get current members.
@@ -34,6 +37,9 @@ class TestingData:
         
         if len(fetch) >= 0:
             needed_members -= len(fetch)
+        
+        if needed_members <= 0:
+            return
         
         print(f"Adding {needed_members} random members to the database.")
         
@@ -92,11 +98,10 @@ class TestingData:
             else:
                 chats_remaining = 0
             
-            if chats_remaining == 0:
+            if float(chats_remaining) <= 0:
                 return
             
-            else:
-                print(f"Adding {chats_remaining} random chats to {member.email}")
+            print(f"Adding {chats_remaining} random chats to {member.email}")
             
             # For each remaining chat.
             for x in range(chats_remaining):
@@ -124,5 +129,71 @@ class TestingData:
                 self.chat_connection.commit()
                     
     def add_classes(self):
-        for x in range(self.available_classes):
-            pass
+        # Get the current tutors.
+        self.gym_cursor.execute("SELECT * FROM members WHERE is_tutor = 1")
+        tutor_fetch = self.gym_cursor.fetchall()
+        
+        # Get all members that aren't tutors.
+        self.gym_cursor.execute("SELECT * FROM members WHERE is_tutor = 0")
+        member_fetch = self.gym_cursor.fetchall()        
+        
+        # Get all available classes.
+        self.gym_cursor.execute("SELECT * FROM classes")
+        classes_fetch = self.gym_cursor.fetchall()
+        
+        remaining_classes = self.classes_to_generate
+        remaining_classes -= len(classes_fetch)
+        
+        if remaining_classes <= 0:
+            return # Return early.
+        
+        print(f"Adding {remaining_classes} classes.")
+        
+        classes = [
+            {
+                "Title": "Swimming Class",
+                "Description": "We will be teaching you how to swim!"
+            },
+            {
+                "Title": "Weight Lifting",
+                "Description": "Weight lifting best practises."
+            },
+            {
+                "Title": "Marathon",
+                "Description": "Marathon event, come join!"
+            },
+            {
+                "Title": "Treadmill Class",
+                "Description": "Let's listen to some jams and tread!"
+            },
+            {
+                "Title": "Dietry",
+                "Description": "Best dietry options to gain muscle."
+            }
+        ]
+        
+        for x in range(remaining_classes):
+            creating_class = random.choice(classes)
+            title = creating_class["Title"]
+            description = creating_class["Description"]
+            start_date = datetime.now() + timedelta(days = random.randint(7, 24))
+            start_date = datetime.strftime(start_date, "%Y-%m-%d %H:%M")
+            
+            tutor = random.choice(tutor_fetch)
+            tutor_id = tutor[0]
+            
+            applied_members : list[int] = []
+            
+            for i in range(random.randint(0, 5)):
+                mem = random.choice(member_fetch)
+                applied_members.append(mem[0])
+            
+            # Add the class to the classes table.
+            self.gym_cursor.execute(
+                "INSERT INTO classes"
+                "(tutor_id, applied_members, title, description, start_date) VALUES"
+                "(?, ?, ?, ?, ?)",
+                (tutor_id, str(applied_members), title, description, str(start_date))
+            )
+            
+            self.gym_connection.commit()

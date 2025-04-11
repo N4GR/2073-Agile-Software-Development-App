@@ -56,6 +56,8 @@ class Chat:
         """
         self.chat_data = chat_data
         
+        print(self.chat_data)
+        
         self.id = self.chat_data[0]
         self.members = self.get_members()
         self.messages = self.get_messages()
@@ -114,12 +116,12 @@ class AvailableClass:
         Args:
             chat_data (tuple): Data retrieved from the classes database.
         """
-        self.chat_data = class_data
-        self.chat_id : int = class_data["id"]
-        self.tutor_id : int = class_data["tutor_id"]
-        self.title : str = class_data["title"]
-        self.description : str = class_data["description"]
-        self.start_date = datetime.strptime(class_data["start_date"], "%Y-%m-%d %H:%M")
+        self.class_data = class_data
+        self.id : int = self.class_data["id"]
+        self.tutor_id : int = self.class_data["tutor_id"]
+        self.title : str = self.class_data["title"]
+        self.description : str = self.class_data["description"]
+        self.start_date = datetime.strptime(self.class_data["start_date"], "%Y-%m-%d %H:%M")
         
         # Retrieve the applied memebrs as a list from a string.
-        self.applied_members : list[int] = ast.literal_eval(class_data["applied_members"])
+        self.applied_members : list[int] = ast.literal_eval(self.class_data["applied_members"])

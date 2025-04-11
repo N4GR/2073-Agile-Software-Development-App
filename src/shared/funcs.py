@@ -3,13 +3,11 @@ import sys
 import random
 
 # Third-party imports.
-from PySide6.QtGui import (
-    QPixmap, QPainter, QPainterPath
-)
-
-from PySide6.QtCore import (
-    Qt, QRect
-)
+from PySide6.QtWidgets import QApplication
+from PySide6.QtGui import QPixmap, QPainter, QPainterPath, QColor
+from PySide6.QtCore import Qt, QRect, QSize
+from PySide6.QtSvg import QSvgRenderer
+from PySide6.QtXml import QDomDocument
 
 def path(src: str) -> str:
     """A function to get the real path of a string for packaging reasons.
@@ -76,3 +74,7 @@ def get_random_profile_pixmap() -> QPixmap:
     random_image = random.choice(profile_images) # Random image path from the profile images list.
     
     return QPixmap(random_image)
+
+def get_property(name: str):
+    """A function to get a property from the QApplication."""
+    return QApplication.instance().property(name)

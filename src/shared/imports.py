@@ -1,6 +1,7 @@
 # Python imports.
 import sqlite3
 import random
+import math
 
 # Third-party imports.
 from PySide6.QtWidgets import (
@@ -13,7 +14,7 @@ from PySide6.QtCore import (
 )
 
 from PySide6.QtGui import (
-    QPixmap, QIcon
+    QPixmap, QIcon, QMouseEvent, QFontMetrics, QColor
 )
 
 # Local imports.

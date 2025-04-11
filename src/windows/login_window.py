@@ -24,11 +24,11 @@ class LoginWindow(QWidget):
         """A function to set the design of a widget."""
         self.setFixedSize(self.parentWidget().size()) # Set the login window to fill the parent.
         
-        # Create a background for the widget with a fixed colour.
+        # Get the background image and set it to the background of the window.
         self.background_label = QLabel(self)
         self.background_label.setFixedSize(self.size())
-        self.background_label.setStyleSheet(f"background-color: {self.colour_manager.background};")
-        
+        self.background_label.setPixmap(QPixmap(path("/assets/panels/background_gradient.png")))
+                
     def _set_widgets(self):
         """A function to set the relevant widgets to the login window."""
         self.login_panel = LoginPanel(self)
@@ -64,17 +64,21 @@ class LoginPanel(QWidget):
             self.parentWidget().height() * 0.5 # 50% of parent height.
         )
         
-        # Move the widget to the centre of the window.
-        self.centre_widget(y_offset = -30)
-        
-        # Create a background label for the widget with a fixed colour.
+        # Get the background panel image and set it as the background.
         self.background_label = QLabel(self)
         self.background_label.setFixedSize(self.size()) # Fill widget.
-        self.background_label.setStyleSheet(
-            f"background-color: {self.colour_manager.panel};"
-            f"border: 1px solid {self.colour_manager.border};"
-            "border-radius: 10px"
+        self.background_label.setPixmap(
+            QPixmap(
+                path("/assets/panels/login.png")
+            ).scaled(
+                self.size(),
+                aspectMode = Qt.AspectRatioMode.IgnoreAspectRatio,
+                mode = Qt.TransformationMode.SmoothTransformation
+            )
         )
+        
+        # Move the widget to the centre of the window.
+        self.centre_widget(y_offset = -30)
     
     def _set_widgets(self):
         """A function to set the widgets related to the widget."""
@@ -123,6 +127,16 @@ class LoginPanel(QWidget):
             - (self.width() / 2) + x_offset,
             (self.parentWidget().height() / 2)
             - (self.height() / 2) + y_offset
+        )
+        
+        self.background_label.setPixmap(
+            QPixmap(
+                path("/assets/panels/login.png")
+            ).scaled(
+                self.size(),
+                aspectMode = Qt.AspectRatioMode.IgnoreAspectRatio,
+                mode = Qt.TransformationMode.SmoothTransformation
+            )
         )
     
     def set_registering(self):
@@ -207,9 +221,13 @@ class LoginPanel(QWidget):
             
             # Error label to display in set_error function.
             self.error_label = QLabel(self)
+            self.error_label.setFixedWidth(self.parentWidget().width())
+            self.error_label.setFixedHeight(20)
             self.error_label.setFont(self.font_manager.geist.regular)
             self.error_label.setText("INVALID")
-            self.error_label.setStyleSheet("color: red;")
+            self.error_label.setStyleSheet("color: red; text-align: center;")
+            self.error_label.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
+            self.error_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             self.error_label.hide() # Start hidden.
             
             # Line edit to input.
@@ -220,6 +238,7 @@ class LoginPanel(QWidget):
             self.line_edit.setStyleSheet(
                 f"background-color: {self.colour_manager.background};"
                 f"color: {self.colour_manager.text};"
+                "border-radius: 15px;"
             )
             
             self.main_layout = QHBoxLayout()
@@ -228,12 +247,6 @@ class LoginPanel(QWidget):
             self.error_label.raise_()
             
             self.setLayout(self.main_layout)
-            
-            # Move the error label centre-right of the line edit.
-            self.error_label.move(
-                self.sizeHint().width() - self.error_label.sizeHint().width(),
-                0
-            )
         
         def set_error(self):
             """A function to set the user input error label to be shown."""

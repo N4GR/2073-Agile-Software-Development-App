@@ -25,10 +25,18 @@ class ChatWindow(QWidget):
         """A function to set the design of the chat window."""
         self.setFixedSize(self.parentWidget().size()) # Fill main window.
         
-        # Set background as static colour.
+        # Set background.
         self.background_label = QLabel(self)
         self.background_label.setFixedSize(self.size())
-        self.background_label.setStyleSheet(f"background-color: {self.colour_manager.background}")
+        self.background_label.setPixmap(
+            QPixmap(
+                path("/assets/panels/background_gradient.png")
+            ).scaled(
+                self.size(),
+                aspectMode = Qt.AspectRatioMode.IgnoreAspectRatio,
+                mode = Qt.TransformationMode.SmoothTransformation
+            )
+        )
     
     def _set_widgets(self):
         """A function to load the neccesary widgets into the chat window."""
@@ -88,7 +96,7 @@ class Chats(QWidget):
         
         self.content_widget = QWidget(self)
         self.content_widget.setFixedWidth(self.width())
-        self.content_widget.setStyleSheet("background-color: transparent;")
+        self.content_widget.setStyleSheet("background-color: transparent; border: none;")
         self.content_layout = QVBoxLayout(self.content_widget)
         self.content_layout.setContentsMargins(0, 0, 0, 0)
         self.content_layout.setSpacing(0)
@@ -98,7 +106,7 @@ class Chats(QWidget):
         scroll_area.setWidget(self.content_widget)
         scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-        scroll_area.setStyleSheet("background-color: transparent;")
+        scroll_area.setStyleSheet("background-color: transparent; border: none;")
         
         self.main_layout.addWidget(scroll_area)
             
@@ -335,14 +343,28 @@ class OpenChat(QWidget):
                 self.member_name.setFont(self.member_font)
                 self.member_name.setStyleSheet(f"color: {self.colour_manager.text};")
                 
-                self.text_label = QLabel(self)
-                self.text_label.setText(self.message.text)
+                self.text_label = QTextEdit(self)
+                self.text_label.setPlainText(self.message.text)
                 self.text_label.setFont(self.font_manager.geist.regular)
+                self.text_label.setReadOnly(True)
                 self.text_font = self.text_label.font()
                 self.text_font.setPointSize(10)
                 self.text_label.setFont(self.text_font)
                 self.text_label.setStyleSheet(f"color: {self.colour_manager.text};")
-
+                self.text_label.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+                self.text_label.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+                
+                text = self.text_label.toPlainText()
+                if "\n" in text:
+                    text_lines = text.count("\n")
+                
+                else:
+                    text_lines = math.ceil(len(self.text_label.toPlainText()) / 28)
+                
+                
+                # Adjust the size of the label according to the text size.
+                text_label_font_metrics = QFontMetrics(self.text_label.font())
+                self.text_label.setFixedHeight((text_label_font_metrics.height() * text_lines) + 10)
                 
                 # Add widgets to layouts.
                 self.top_layout.addWidget(self.profile_image)
@@ -397,8 +419,8 @@ class OpenChat(QWidget):
             self.text_edit.move(self.profile_label.width(), 0)
             self.text_edit.setPlaceholderText("Message a friend!")
             self.text_edit.setStyleSheet(
-                f"background-color: {self.colour_manager.text};"
-                f"color: {self.colour_manager.header}"
+                f"background-color: black;"
+                f"color: white"
             )
             self.text_edit.setFont(self.font_manager.geist.regular)
             
@@ -559,7 +581,7 @@ class CreateChat(QWidget):
                 
             # So a user has been found, it's not themselves - great, continue!
             chat_database : DatabaseManager = QApplication.instance().property("DatabaseManager")("data/chat.sqlite")
-            
+                        
             # Check if the user already has a chat with the other person.
             personal_chat = chat_database.get_personal_chat(logged_member, adding_member)
             

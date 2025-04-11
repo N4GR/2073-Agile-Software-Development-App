@@ -23,10 +23,18 @@ class GymWindow(QWidget):
         """A function to set the design of the gym window."""
         self.setFixedSize(self.parentWidget().size()) # Fill main window.
         
-        # Set background as static colour.
+        # Set background.
         self.background_label = QLabel(self)
         self.background_label.setFixedSize(self.size())
-        self.background_label.setStyleSheet(f"background-color: {self.colour_manager.background}")
+        self.background_label.setPixmap(
+            QPixmap(
+                path("/assets/panels/background_gradient.png")
+            ).scaled(
+                self.size(),
+                aspectMode = Qt.AspectRatioMode.IgnoreAspectRatio,
+                mode = Qt.TransformationMode.SmoothTransformation
+            )
+        )
     
     def _set_widgets(self):
         """A function to load the neccesary widgets into the gym window."""

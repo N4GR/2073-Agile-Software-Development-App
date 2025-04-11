@@ -9,6 +9,7 @@ from src.windows.classes_window import ClassesWindow
 from src.windows.chat_window import ChatWindow
 from src.windows.billing_window import BillingWindow
 from src.windows.current_classes_window import CurrentClassesWindow
+from src.windows.class_window import ClassWindow
 
 class MainWindow(QWidget):
     def __init__(self):
@@ -166,6 +167,21 @@ class MainWindow(QWidget):
         
         # Set the current window.
         self.current_window = self.current_classes_window
+
+    def show_class_window(self, opening_class: AvailableClass):
+        print(f"Showing the {opening_class.title} class window.")
+        
+        # Delete the current window being displayed.
+        self.current_window.deleteLater()
+        
+        # Create the chat window.
+        self.classes_window = ClassWindow(self, opening_class)
+        
+        # Change the window title to reflect new window.
+        self.setWindowTitle(f"{self.application_name} - {opening_class.title}")
+        
+        # Set the current window.
+        self.current_window = self.classes_window
 
     def move_to_screen(self, name: str):
         """A function to move the widget to a different screen with a given name.
