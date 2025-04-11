@@ -4,10 +4,8 @@ import random
 
 # Third-party imports.
 from PySide6.QtWidgets import QApplication
-from PySide6.QtGui import QPixmap, QPainter, QPainterPath, QColor
-from PySide6.QtCore import Qt, QRect, QSize
-from PySide6.QtSvg import QSvgRenderer
-from PySide6.QtXml import QDomDocument
+from PySide6.QtGui import QPixmap, QPainter, QPainterPath
+from PySide6.QtCore import Qt, QRect
 
 def path(src: str) -> str:
     """A function to get the real path of a string for packaging reasons.
